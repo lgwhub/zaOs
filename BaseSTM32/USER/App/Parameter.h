@@ -113,7 +113,13 @@ typedef struct
 extern _param_water8  Coldw;
 
 
+extern unsigned char ModBusParaByte[];   //modbus 参数 拷贝缓冲区
 
+extern unsigned char FlagSetAllDefault;
+
+void Default_ParamInit0(void);//不需要保存的参数
+void Default_ParamInit1(void); //普通参数  //需要保存的参数
+void Default_ParamInit2(void); //整定值
 
 void Default_ParamInit(void);
 void InitSaveParam(void);

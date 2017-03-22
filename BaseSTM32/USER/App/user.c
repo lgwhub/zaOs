@@ -389,11 +389,13 @@ lAddressKey=0;  //拨码开关PB12-PB15，值，最低4位
 
 TimeForSaveParam = 0;
 
-Default_ParamInit();    //?????????问题
- /*
+ Default_ParamInit0();//不需要保存的参数
+ Default_ParamInit1();    ////需要保存的参数
+ Default_ParamInit2();    ////整定值
+
   if(Load_Param()==0)		//取设定值
    {
-    
+   /*  
     gData[0].AnyError|=8;
     gData[1].AnyError|=8;
     gData[2].AnyError|=8;
@@ -404,8 +406,9 @@ Default_ParamInit();    //?????????问题
      _Param_SwapMemery(0,cMemBufA);   //parameter ---> cMemBufB
     cMemBufB[Max_MemBuf-2] =  FlagParamInitnized; 
     Write_Param();
+*/   
    }
-*/
+
 #if CONFIG_CHECK_DEVICE_ID
 		if(GetStm32F103_DeviceId_Sum6() == gpParam->Stm32IdSum6)
 				{
@@ -791,7 +794,80 @@ void Task002(void * pdata)
 }
 ///////////////////////////
 
+////////////////////////////////////////////////
+void TaskSave(void * pdata)
+{
+INT8U err;
+CPU_SR         cpu_sr;
 
+ 
+	pdata = pdata;                          	 	// 避免编译警告	   
+
+
+
+
+	for(;;)
+				{
+				 
+				 
+          
+							
+        if(FlagSetAllDefault > 0)//flag
+        	   {
+        	   	
+        	   	if(3 == FlagSetAllDefault)
+				 	      {
+         
+                Default_ParamInit1();    ////需要保存的参数
+                Default_ParamInit2();    ////整定值
+                }
+        	   	else if(2 == FlagSetAllDefault)
+				 	      {
+         
+                Default_ParamInit1();    ////需要保存的参数
+
+                }
+        	   	
+        	   	Default_ParamInit0();//不需要保存的参数
+        	   	
+        	   	FlagSetAllDefault = 0 ;
+        	   	
+        	   	
+             //自动恢复默认值
+             cMemBufA[Max_MemBuf-2] =  FlagParamInitnized; 
+             
+             OS_ENTER_CRITICAL();   //CPU_SR         cpu_sr;
+             _Param_SwapMemery(0,cMemBufA);   //parameter ---> cMemBufB
+              OS_EXIT_CRITICAL();
+              
+             Write_Param();
+             
+             }
+          
+          
+          
+          
+          if(TimeForSaveParam==1)  //延时保存
+          	{
+							//////
+						
+						 OS_ENTER_CRITICAL();   //CPU_SR         cpu_sr;
+	            _Param_SwapMemery(0,cMemBufA);   //parameter ---> cMemBufB
+	            TimeForSaveParam = 0;
+             OS_EXIT_CRITICAL();
+             Write_Param();
+            
+						}
+						
+					if(TimeForSaveParam>0)
+						{
+							TimeForSaveParam	-- ;
+						}
+				
+				
+				OSTimeDly(OS_TICKS_PER_SEC);	    //延时1秒		
+			}		
+}
 
 
 

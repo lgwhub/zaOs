@@ -5,6 +5,7 @@
 unsigned char cMemBufA[Max_MemBuf+2];
 unsigned char cMemBufB[Max_MemBuf+2];
 
+unsigned char FlagSetAllDefault;
 unsigned short int TimeForSaveParam;
 
 _param_water8  Coldw;
@@ -131,12 +132,30 @@ unsigned short int Stm32IdSum6;
 
 
 ////////////////////////////////////////////////////
+// Default_ParamInit0();//不需要保存的参数
+// Default_ParamInit1();    ////需要保存的参数
+// Default_ParamInit2();    ////整定值
 
+void Default_ParamInit0(void)
+{
+}
+void Default_ParamInit1(void)
+{
+}
+void Default_ParamInit2(void)
+{
+}
 void Default_ParamInit(void)
 {
 
 	unsigned char i;
 	
+	
+	TimeAutoLock1=0;
+TimeAutoLock2=0;
+TimeAutoLock3=0;
+
+FlagSetAllDefault = 0;
                                            //2字节
     Coldw.SoftVer = SOFT_VER;  
 
